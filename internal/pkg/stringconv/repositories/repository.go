@@ -1,5 +1,12 @@
 package repositories
 
-type Repository struct{}
+import (
+	"github.com/ArkjuniorK/gofiber-boilerplate/internal/app/config"
+)
 
-func New() *Repository { return &Repository{} }
+type Repository struct {
+}
+
+func New(db *config.Database) *Repository {
+	return &Repository{}
+}

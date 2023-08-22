@@ -7,14 +7,14 @@ import (
 )
 
 type Converter struct {
-	Service    *services.Service
-	Repository *repositories.Repository
+	service    services.Service
+	repository *repositories.Repository
 }
 
-func NewConverterHandler(svc *services.Service, repo *repositories.Repository) *Converter {
+func NewConverterHandler(svc services.Service, repo *repositories.Repository) *Converter {
 	return &Converter{
-		Service:    svc,
-		Repository: repo,
+		service:    svc,
+		repository: repo,
 	}
 }
 
