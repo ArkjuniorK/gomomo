@@ -15,9 +15,18 @@ func New(name string, engine *config.Engine) *Router {
 	return &Router{router}
 }
 
-// Route would contain all the route for each sub router for example the 'converter'
+// Handle would contain all the route for each sub router for example the 'converter'
 // is sub route of 'stringconv' package. This is the only function that should be
 // called at the package init file.
-func (r *Router) Route(handler *handlers.Handler) {
-	routeConverter(r.router.Group("converter"), handler)
+func (r *Router) Handle(handler *handlers.Handler) {
+
+	{
+		var (
+			hdl = handler.Converter
+			rtr = r.router.Group("converter")
+		)
+
+		rtr.Post("to-base64", hdl.ConvertToBase64)
+	}
+
 }

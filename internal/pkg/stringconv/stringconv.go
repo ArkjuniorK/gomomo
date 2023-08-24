@@ -8,13 +8,7 @@ import (
 	"github.com/ArkjuniorK/gofiber-boilerplate/internal/pkg/stringconv/services"
 )
 
-type Package struct {
-	// Service would usually be used by other module/package so,
-	// it is make sense to export the service
-	Service services.Service
-}
-
-func New(name string, engine *config.Engine, db *config.Database, logger *config.Logger) *Package {
+func New(name string, engine *config.Engine, db *config.Database, logger *config.Logger) {
 	var (
 		repo    = repositories.New(db)
 		svc     = services.New(repo, logger)
@@ -22,6 +16,5 @@ func New(name string, engine *config.Engine, db *config.Database, logger *config
 		router  = routers.New(name, engine)
 	)
 
-	router.Route(handler)
-	return &Package{Service: svc}
+	router.Handle(handler)
 }

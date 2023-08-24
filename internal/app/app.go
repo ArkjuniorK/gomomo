@@ -7,22 +7,29 @@ import (
 	"go.uber.org/zap"
 )
 
-// New initialize the app at this file such as database connection, logger, engine and packages.
+// New would initialize  database connection, logger, engine and the packages.
 // This function would be exported and used by the cmd file at '/cmd/cmd.go'.
+//
 // TODO: Implement graceful shutdown
 func New(host, port string) {
 	var (
+		addr     = fmt.Sprintf("%v:%v", host, port)
 		logger   = config.NewLogger()
 		database = config.NewDatabase(logger)
 		engine   = config.NewEngine(logger)
 	)
 
-	// initialized the packages
-	stringconv.New("string-conv", engine, database, logger)
+	initPackages(engine, database, logger)
 
-	addr := fmt.Sprintf("%v+%v", host, port)
 	err := engine.App.Listen(addr)
 	if err != nil {
 		logger.Core.Fatal("Unable to start app", zap.Error(err))
 	}
+}
+
+func initPackages(engine *config.Engine, database *config.Database, logger *config.Logger) {
+	logger.Core.Sugar().Infoln("Initializing packages...")
+	defer logger.Core.Sugar().Infoln("Packages initialized")
+
+	stringconv.New("stringconv", engine, database, logger)
 }

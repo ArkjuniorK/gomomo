@@ -1,9 +1,11 @@
 package config
 
 import (
+	"github.com/glebarez/sqlite"
 	"go.uber.org/zap"
-	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"os"
+	"path"
 )
 
 // Database wrapper, the Core could be replaced with any kind of database/orm
@@ -16,10 +18,11 @@ func NewDatabase(logger *Logger) *Database {
 	logger.Core.Sugar().Infoln("Initializing database connection...")
 	defer logger.Core.Sugar().Infoln("Database initialized!")
 
-	dsn := "host=localhost user=gorm password=gorm dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
 	conf := &gorm.Config{}
+	wd, _ := os.Getwd()
+	dbFile := path.Join(wd, "boilerplate.db")
 
-	core, err := gorm.Open(postgres.Open(dsn), conf)
+	core, err := gorm.Open(sqlite.Open(dbFile), conf)
 	if err != nil {
 		logger.Core.Fatal("Unable connecting database", zap.Error(err))
 		return nil
