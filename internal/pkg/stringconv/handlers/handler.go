@@ -9,7 +9,7 @@ type Handler struct {
 	Converter *Converter
 }
 
-func New(svc services.Service, repo *repositories.Repository) *Handler {
+func New(svc *services.Service, repo *repositories.Repository) *Handler {
 	return &Handler{
 		Converter: NewConverterHandler(svc, repo),
 	}

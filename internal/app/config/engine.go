@@ -19,6 +19,7 @@ func NewEngine(logger *Logger) *Engine {
 	conf.ErrorHandler = errorHandler
 	conf.ReadTimeout = 10 * time.Second
 	conf.WriteTimeout = 10 * time.Second
+	conf.DisableStartupMessage = true
 
 	return &Engine{App: fiber.New(conf)}
 }

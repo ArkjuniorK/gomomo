@@ -4,17 +4,22 @@ import (
 	"github.com/ArkjuniorK/gofiber-boilerplate/internal/app/config"
 	"github.com/ArkjuniorK/gofiber-boilerplate/internal/pkg/stringconv/handlers"
 	"github.com/ArkjuniorK/gofiber-boilerplate/internal/pkg/stringconv/repositories"
-	"github.com/ArkjuniorK/gofiber-boilerplate/internal/pkg/stringconv/routers"
 	"github.com/ArkjuniorK/gofiber-boilerplate/internal/pkg/stringconv/services"
+	"github.com/gofiber/fiber/v2"
 )
 
-func New(name string, engine *config.Engine, db *config.Database, logger *config.Logger) {
+const name = "stringconv"
+
+func New(router fiber.Router, db *config.Database, logger *config.Logger) {
 	var (
 		repo    = repositories.New(db)
 		svc     = services.New(repo, logger)
 		handler = handlers.New(svc, repo)
-		router  = routers.New(name, engine)
 	)
 
-	router.Handle(handler)
+	r := router.Group(name)
+	r.Route("converter", func(router fiber.Router) {
+		router.Post("to-base64", handler.Converter.ConvertToBase64)
+	})
+
 }

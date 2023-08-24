@@ -5,13 +5,11 @@ import (
 	"github.com/ArkjuniorK/gofiber-boilerplate/internal/pkg/stringconv/repositories"
 )
 
-type Service interface{}
-
-type service struct {
+type Service struct {
 	repo   *repositories.Repository
 	logger *config.Logger
 }
 
-func New(repo *repositories.Repository, logger *config.Logger) Service {
-	return &service{repo, logger}
+func New(repo *repositories.Repository, logger *config.Logger) *Service {
+	return &Service{repo, logger}
 }
