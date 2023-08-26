@@ -3,53 +3,78 @@ package app
 import (
 	"fmt"
 	"github.com/ArkjuniorK/gofiber-boilerplate/internal/app/config"
+	"github.com/ArkjuniorK/gofiber-boilerplate/internal/app/helper"
+	"github.com/ArkjuniorK/gofiber-boilerplate/internal/pkg"
 	"github.com/ArkjuniorK/gofiber-boilerplate/internal/pkg/stringconv"
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 	"os"
 	"os/signal"
 	"syscall"
 )
 
+type App struct {
+	Addr     string
+	Router   fiber.Router
+	Engine   *config.Engine
+	Logger   *config.Logger
+	Database *config.Database
+}
+
 // New would initialize  database connection, logger, engine and the packages.
-// This function would be exported and used by the cmd file at '/cmd/cmd.go'.
-func New(host, port string) {
+// This function would be exported and used by the cmd file.
+func New(host, port string) *App {
 	var (
 		addr     = fmt.Sprintf("%v:%v", host, port)
 		logger   = config.NewLogger()
 		database = config.NewDatabase(logger)
 		engine   = config.NewEngine(logger)
+		router   = engine.Core.Name(helper.AppName)
 	)
 
-	// register global middleware
-	// engine.App.Use()
-
-	v1 := engine.App.Group("v1")
-	handlePackages(v1, database, logger)
-
-	handleApp(addr, engine, logger)
+	return &App{
+		Addr:     addr,
+		Router:   router,
+		Engine:   engine,
+		Logger:   logger,
+		Database: database,
+	}
 }
 
-func handlePackages(router fiber.Router, database *config.Database, logger *config.Logger) {
-	logger.Core.Sugar().Infoln("Initializing packages...")
-	defer logger.Core.Sugar().Infoln("Packages initialized")
-
-	stringconv.New(router, database, logger)
+func (app *App) Run() {
+	app.handlePackages()
+	app.handleApp()
 }
 
-func handleApp(addr string, engine *config.Engine, logger *config.Logger) {
-	defer logger.Core.Sync()
+func (app *App) handlePackages() {
+	app.Logger.Core.Sugar().Infoln("Initializing packages...")
+	defer app.Logger.Core.Sugar().Infoln("Packages initialized")
 
-	logger.Core.Sugar().Infoln("Service running at ", addr)
-	go func() { engine.App.Listen(addr) }()
+	cfg := &pkg.Config{
+		Router:   app.Router.Group("v1"),
+		Logger:   app.Logger,
+		Database: app.Database,
+	}
+
+	stringconv.New(cfg)
+}
+
+func (app *App) handleApp() {
+	defer func(Core *zap.Logger) {
+		_ = Core.Sync()
+	}(app.Logger.Core)
+
+	app.Logger.Core.Sugar().Infoln("App running at", app.Addr)
+	go func() { _ = app.Engine.Core.Listen(app.Addr) }()
 
 	c := make(chan os.Signal, 1)                    // Create channel to signify a signal being sent
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM) // When an interrupt or termination signal is sent, notify the channel
 
 	sig := <-c // This blocks the main thread until an interrupt is received
-	logger.Core.Sugar().Infoln("Shutting down service because", sig)
-	logger.Core.Sugar().Infoln("Running cleanup tasks...")
+	app.Logger.Core.Sugar().Infoln("Shutting down app because", sig)
+	app.Logger.Core.Sugar().Infoln("Running cleanup tasks...")
 
-	engine.App.Shutdown()
+	_ = app.Engine.Core.Shutdown()
 
-	logger.Core.Sugar().Infoln("Service was successful shutdown.")
+	app.Logger.Core.Sugar().Infoln("App successfully shutdown.")
 }

@@ -3,12 +3,13 @@ package config
 import (
 	"github.com/ArkjuniorK/gofiber-boilerplate/internal/app/helper"
 	"github.com/ArkjuniorK/gofiber-boilerplate/internal/app/schema"
+	"github.com/gofiber/contrib/fiberzap/v2"
 	"github.com/gofiber/fiber/v2"
 	"time"
 )
 
 type Engine struct {
-	App *fiber.App
+	Core *fiber.App
 }
 
 func NewEngine(logger *Logger) *Engine {
@@ -16,12 +17,16 @@ func NewEngine(logger *Logger) *Engine {
 	defer logger.Core.Sugar().Infoln("Engine initialized!")
 
 	conf := fiber.Config{}
+	conf.AppName = helper.AppName
 	conf.ErrorHandler = errorHandler
 	conf.ReadTimeout = 10 * time.Second
 	conf.WriteTimeout = 10 * time.Second
 	conf.DisableStartupMessage = true
 
-	return &Engine{App: fiber.New(conf)}
+	app := fiber.New(conf)
+	app.Use(fiberzap.New(fiberzap.Config{Logger: logger.Core}))
+
+	return &Engine{Core: app}
 }
 
 // errorHandler is custom error handler that send a JSON response.

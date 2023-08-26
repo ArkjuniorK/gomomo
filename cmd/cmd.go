@@ -14,4 +14,6 @@ var (
 )
 
 // This function use to initialize, configure and run the entire app.
-func init() { app.New(*host, *port) }
+func init() {
+	app.New(*host, *port).Run()
+}

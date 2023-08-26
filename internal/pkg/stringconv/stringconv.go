@@ -1,25 +1,16 @@
 package stringconv
 
 import (
-	"github.com/ArkjuniorK/gofiber-boilerplate/internal/app/config"
-	"github.com/ArkjuniorK/gofiber-boilerplate/internal/pkg/stringconv/handlers"
-	"github.com/ArkjuniorK/gofiber-boilerplate/internal/pkg/stringconv/repositories"
-	"github.com/ArkjuniorK/gofiber-boilerplate/internal/pkg/stringconv/services"
-	"github.com/gofiber/fiber/v2"
+	"github.com/ArkjuniorK/gofiber-boilerplate/internal/pkg"
 )
 
-const name = "stringconv"
-
-func New(router fiber.Router, db *config.Database, logger *config.Logger) {
+func New(config *pkg.Config) {
 	var (
-		repo    = repositories.New(db)
-		svc     = services.New(repo, logger)
-		handler = handlers.New(svc, repo)
+		repo = NewRepository(config.Database)
+		svc  = NewService(repo, config.Logger)
+		hdl  = NewHandler(svc, repo)
+		rg   = config.Router.Group("stringconv")
 	)
 
-	r := router.Group(name)
-	r.Route("converter", func(router fiber.Router) {
-		router.Post("to-base64", handler.Converter.ConvertToBase64)
-	})
-
+	rg.Post("to-base64", hdl.ConvertToBase64)
 }
