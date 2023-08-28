@@ -12,5 +12,6 @@ func New(config *pkg.Config) {
 		rg   = config.Router.Group("stringconv")
 	)
 
-	rg.Post("to-base64", hdl.ConvertToBase64)
+	rg.Post("base64", hdl.ConvertToBase64)
+	rg.Post("base32", hdl.ConvertToBase32)
 }

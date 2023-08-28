@@ -30,3 +30,19 @@ func (h *Handler) ConvertToBase64(ctx *fiber.Ctx) error {
 
 	return helper.SendOk(ctx, rs)
 }
+
+func (h *Handler) ConvertToBase32(ctx *fiber.Ctx) error {
+	var body *schema.Request
+	err := ctx.BodyParser(&body)
+	if err != nil {
+		return err
+	}
+
+	payload := body.Payload.(string)
+	rs, err := h.service.Convert(ctx.Context(), "base32", payload)
+	if err != nil {
+		return err
+	}
+
+	return helper.SendOk(ctx, rs)
+}

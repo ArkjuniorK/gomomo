@@ -3,7 +3,6 @@ package app
 import (
 	"fmt"
 	"github.com/ArkjuniorK/gofiber-boilerplate/internal/app/config"
-	"github.com/ArkjuniorK/gofiber-boilerplate/internal/app/helper"
 	"github.com/ArkjuniorK/gofiber-boilerplate/internal/pkg"
 	"github.com/ArkjuniorK/gofiber-boilerplate/internal/pkg/stringconv"
 	"github.com/gofiber/fiber/v2"
@@ -29,7 +28,7 @@ func New(host, port string) *App {
 		logger   = config.NewLogger()
 		database = config.NewDatabase(logger)
 		engine   = config.NewEngine(logger)
-		router   = engine.Core.Name(helper.AppName)
+		router   = engine.Core
 	)
 
 	return &App{
@@ -42,11 +41,11 @@ func New(host, port string) *App {
 }
 
 func (app *App) Run() {
-	app.handlePackages()
+	app.handlePkg()
 	app.handleApp()
 }
 
-func (app *App) handlePackages() {
+func (app *App) handlePkg() {
 	app.Logger.Core.Sugar().Infoln("Initializing packages...")
 	defer app.Logger.Core.Sugar().Infoln("Packages initialized")
 
@@ -64,6 +63,8 @@ func (app *App) handleApp() {
 		_ = Core.Sync()
 	}(app.Logger.Core)
 
+	app.printStack()
+
 	app.Logger.Core.Sugar().Infoln("App running at", app.Addr)
 	go func() { _ = app.Engine.Core.Listen(app.Addr) }()
 
@@ -77,4 +78,15 @@ func (app *App) handleApp() {
 	_ = app.Engine.Core.Shutdown()
 
 	app.Logger.Core.Sugar().Infoln("App successfully shutdown.")
+}
+
+func (app *App) printStack() {
+	app.Logger.Core.Sugar().Infoln("Printing stack, please disable this at production!")
+	stack := app.Engine.Core.Stack()
+	for _, s := range stack {
+		for _, r := range s {
+			app.Logger.Core.Sugar().Infoln(r.Method, r.Path)
+		}
+	}
+
 }

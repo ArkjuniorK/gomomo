@@ -13,7 +13,7 @@ var (
 	host = fs.String("host", "localhost", "Host to use by the app")
 )
 
-// This function use to initialize, configure and run the entire app.
+// This function use to init, configure and run the entire app.
 func init() {
 	app.New(*host, *port).Run()
 }
