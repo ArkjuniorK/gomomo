@@ -1,92 +1,53 @@
 package app
 
 import (
+	"context"
 	"fmt"
-	"github.com/ArkjuniorK/gofiber-boilerplate/internal/app/config"
-	"github.com/ArkjuniorK/gofiber-boilerplate/internal/pkg"
-	"github.com/ArkjuniorK/gofiber-boilerplate/internal/pkg/stringconv"
-	"github.com/gofiber/fiber/v2"
-	"go.uber.org/zap"
+	"github.com/ArkjuniorK/gofiber-boilerplate/internal/core"
 	"os"
 	"os/signal"
 	"syscall"
 )
 
-type App struct {
-	Addr     string
-	Router   fiber.Router
-	Engine   *config.Engine
-	Logger   *config.Logger
-	Database *config.Database
+type App interface {
+	Run()
 }
 
-// New would initialize  database connection, logger, engine and the packages.
-// This function would be exported and used by the cmd file.
-func New(host, port string) *App {
-	var (
-		addr     = fmt.Sprintf("%v:%v", host, port)
-		logger   = config.NewLogger()
-		database = config.NewDatabase(logger)
-		engine   = config.NewEngine(logger)
-		router   = engine.Core
-	)
-
-	return &App{
-		Addr:     addr,
-		Router:   router,
-		Engine:   engine,
-		Logger:   logger,
-		Database: database,
-	}
+// app contain all the core dependency
+// and should be implemented before application start
+type app struct {
+	Addr   string
+	Router *core.Router
+	Logger *core.Logger
 }
 
-func (app *App) Run() {
-	app.handlePkg()
-	app.handleApp()
-}
+func (app *app) Run() {
+	router := app.Router.GetCore()
+	logger := app.Logger.GetCore()
 
-func (app *App) handlePkg() {
-	app.Logger.Core.Sugar().Infoln("Initializing packages...")
-	defer app.Logger.Core.Sugar().Infoln("Packages initialized")
+	logger.Info("App running", "address", app.Addr)
+	go func() { _ = router.Listen(app.Addr) }()
 
-	cfg := &pkg.Config{
-		Router:   app.Router.Group("v1"),
-		Logger:   app.Logger,
-		Database: app.Database,
-	}
-
-	stringconv.New(cfg)
-}
-
-func (app *App) handleApp() {
-	defer func(Core *zap.Logger) {
-		_ = Core.Sync()
-	}(app.Logger.Core)
-
-	app.printStack()
-
-	app.Logger.Core.Sugar().Infoln("App running at", app.Addr)
-	go func() { _ = app.Engine.Core.Listen(app.Addr) }()
-
+	var sig os.Signal
 	c := make(chan os.Signal, 1)                    // Create channel to signify a signal being sent
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM) // When an interrupt or termination signal is sent, notify the channel
+	sig = <-c                                       // This blocks the main thread until an interrupt is received
 
-	sig := <-c // This blocks the main thread until an interrupt is received
-	app.Logger.Core.Sugar().Infoln("Shutting down app because", sig)
-	app.Logger.Core.Sugar().Infoln("Running cleanup tasks...")
+	logger.Info("Signal received", "signal", sig.String())
+	logger.Info("Shutting down app, waiting background process to finish")
+	defer logger.Info("App shutdown")
 
-	_ = app.Engine.Core.Shutdown()
-
-	app.Logger.Core.Sugar().Infoln("App successfully shutdown.")
+	_ = router.ShutdownWithContext(context.Background())
 }
 
-func (app *App) printStack() {
-	app.Logger.Core.Sugar().Infoln("Printing stack, please disable this at production!")
-	stack := app.Engine.Core.Stack()
-	for _, s := range stack {
-		for _, r := range s {
-			app.Logger.Core.Sugar().Infoln(r.Method, r.Path)
-		}
-	}
+// New would implement the App interface by
+// initialize the app's core dependencies and packages.
+func New(host, port string) App {
+	var app = new(app)
 
+	app.Addr = fmt.Sprintf("%s:%s", host, port)
+	app.initCore()
+	app.initPackages()
+
+	return app
 }

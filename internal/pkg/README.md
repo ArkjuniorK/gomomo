@@ -1,8 +1,7 @@
-Package that act as module would live at this directory, each package would contain
-at least 5 directory and a one main file named after the package name. Those directory is `/routes`, `/services`, `/repositories`, `/handlers`, `/models`.
-It's not limited to these dirs so dev could add new directory if required, for example if the
-package/module had too many middleware, then it possible to create new directory called `/middlewares` to
-hold the middlewares.
-
-One thing to note that only code from main file that would be exported and used outside the package.
-So code from `/services` shouldn't be used outside the package. 
+### Package as Business Logic
+Each package should contain business logic and consist of 
+`service`, `repository`, `model` and `pkg_name` files
+which use to initialize the package. If somehow a package is growing too big, 
+then breaking each file into sub package could also be done to help 
+reduce complexity and manage the code as long as the `pkg_name` file could 
+initiate and return the interface of Service which would be used by application API.
