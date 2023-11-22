@@ -2,10 +2,11 @@ package app
 
 import (
 	"github.com/ArkjuniorK/gofiber-boilerplate/internal/api/handlers"
+	"github.com/ArkjuniorK/gofiber-boilerplate/internal/api/middlewares"
 	"github.com/ArkjuniorK/gofiber-boilerplate/internal/api/routers"
 	"github.com/ArkjuniorK/gofiber-boilerplate/internal/core"
 	"github.com/ArkjuniorK/gofiber-boilerplate/internal/pkg/strcon"
-	"github.com/gofiber/fiber/v2/middleware/recover"
+	recoverfiber "github.com/gofiber/fiber/v2/middleware/recover"
 	slogfiber "github.com/samber/slog-fiber"
 )
 
@@ -18,30 +19,37 @@ func (app *app) initCore() {
 	app.Logger = logger
 
 	router := core.NewRouter()
-	rtrCore := router.GetCore()
-	rtrCore.Use(slogfiber.New(logger.GetCore()))
-	rtrCore.Use(recover.New())
+	rcore := router.GetCore()
+
+	// official and third-party middlewares
+	rcore.Use(slogfiber.New(logger.GetCore()))
+	rcore.Use(recoverfiber.New())
+
+	// application middlewares
+	rcore.Use(middlewares.ResponseDispatcher())
+
 	app.Router = router
 
-	defer logger.GetCore().Info("Setup core done!")
+	defer logger.GetCore().Info("Initializing core packages done!")
 }
 
 // initPackages initialize all the packages inside the pkg directory.
-// This function act as single source where all packages should only
-// initialize here
+// This function act as single source where all
+// packages should be initialized.
 func (app *app) initPackages() {
-	// init common package from inside out
-	// starting from the service, handler then router
-	// that would be registered to application router
+
 	logger := app.Logger.GetCore()
 	router := app.Router.GetCore().Group("/api").Group("/v1")
 
+	// init packages from inside out starting from
+	// service, handler and router then mount
+	// the router with package prefix
 	{
 		svc := strcon.New()
-		hdl := handlers.NewStrconHandler(svc)
-		rtr := routers.NewStrconRouter(hdl)
-		router.Mount("/strcon", rtr)
+		hdl := handlers.NewStrconvHandler(svc)
+		rtr := routers.NewStrconvRouter(hdl)
+		router.Mount("/strconv", rtr)
 	}
 
-	defer logger.Info("Setup packages done!")
+	defer logger.Info("Initializing common packages done!")
 }
