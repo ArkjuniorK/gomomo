@@ -5,7 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func NewStrconRouter(handler *handlers.StrconHandler) *fiber.App {
+func NewStrconvRouter(handler *handlers.StrconvHandler) *fiber.App {
 	router := fiber.New()
 	router.Post("/convert/:type", handler.Convert)
 	return router

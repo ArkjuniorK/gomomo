@@ -1,23 +1,24 @@
 package handlers
 
 import (
+	"context"
 	"github.com/ArkjuniorK/gofiber-boilerplate/internal/api/schema"
 	"github.com/ArkjuniorK/gofiber-boilerplate/internal/pkg/strcon"
 	"github.com/gofiber/fiber/v2"
 )
 
-type StrconHandler struct {
+type StrconvHandler struct {
 	service strcon.Service
 }
 
-func (h *StrconHandler) Convert(ctx *fiber.Ctx) error {
+func (h *StrconvHandler) Convert(ctx *fiber.Ctx) error {
 	var body *schema.Request
 	err := ctx.BodyParser(&body)
 	if err != nil {
 		return err
 	}
 
-	typ := ctx.Route().Path
+	typ := ctx.Params("type")
 	pyd := body.Payload.(string)
 
 	rs, err := h.service.Convert(ctx.Context(), typ, pyd)
@@ -25,9 +26,11 @@ func (h *StrconHandler) Convert(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return ctx.JSON(rs)
+	c := context.WithValue(context.Background(), "data", rs)
+	ctx.SetUserContext(c)
+	return nil
 }
 
-func NewStrconHandler(service strcon.Service) *StrconHandler {
-	return &StrconHandler{service: service}
+func NewStrconvHandler(service strcon.Service) *StrconvHandler {
+	return &StrconvHandler{service: service}
 }

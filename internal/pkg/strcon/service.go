@@ -35,6 +35,6 @@ func (s *service) Convert(ctx context.Context, typ, pyd string) (rs string, err 
 	return "", errors.New("strcon: no type given")
 }
 
-func NewService(repo *repository) Service {
+func newService(repo *repository) Service {
 	return &service{repo: repo}
 }

@@ -1,10 +1,6 @@
 package strcon
 
 func New() Service {
-	var (
-		rp  = newRepository()
-		svc = NewService(rp)
-	)
-
-	return svc
+	var rp = newRepository()
+	return newService(rp)
 }
