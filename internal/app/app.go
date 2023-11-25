@@ -13,20 +13,23 @@ type App interface {
 	Run()
 }
 
-// app contain all the core dependency
-// and should be implemented before application start
+// app contain all the core dependency and should
+// be implemented at application startup.
 type app struct {
-	Addr   string
-	Router *core.Router
+	Addr string
+
+	API    *core.API
 	Logger *core.Logger
+	PubSub *core.PubSub
 }
 
 func (app *app) Run() {
-	router := app.Router.GetCore()
+	api := app.API.GetCore()
 	logger := app.Logger.GetCore()
+	pubSub := app.PubSub.GetCore()
 
 	logger.Info("App running", "address", app.Addr)
-	go func() { _ = router.Listen(app.Addr) }()
+	go func() { _ = api.Listen(app.Addr) }()
 
 	var sig os.Signal
 	c := make(chan os.Signal, 1)                    // Create channel to signify a signal being sent
@@ -37,7 +40,8 @@ func (app *app) Run() {
 	logger.Info("Shutting down app, waiting background process to finish")
 	defer logger.Info("App shutdown")
 
-	_ = router.ShutdownWithContext(context.Background())
+	_ = api.ShutdownWithContext(context.Background())
+	_ = pubSub.Close()
 }
 
 // New would implement the App interface by

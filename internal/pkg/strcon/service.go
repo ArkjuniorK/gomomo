@@ -7,11 +7,6 @@ import (
 	"errors"
 )
 
-type Service interface {
-	// Convert the payload based on given type and return the result and an error.
-	Convert(ctx context.Context, typ, pyd string) (rs string, err error)
-}
-
 // service should implement interfaces.StringConvService interface
 type service struct {
 	repo *repository
@@ -35,6 +30,6 @@ func (s *service) Convert(ctx context.Context, typ, pyd string) (rs string, err 
 	return "", errors.New("strcon: no type given")
 }
 
-func newService(repo *repository) Service {
+func newService(repo *repository) *service {
 	return &service{repo: repo}
 }
