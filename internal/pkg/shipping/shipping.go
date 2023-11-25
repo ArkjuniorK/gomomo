@@ -1,10 +1,10 @@
-package strcon
+package shipping
 
 import "github.com/ArkjuniorK/gofiber-boilerplate/internal/core"
 
-func New(api *core.API, l *core.Logger, ps *core.PubSub) {
+func New(db *core.Database, api *core.API, l *core.Logger, ps *core.PubSub) {
 	var (
-		rpo = newRepository()
+		rpo = newRepository(db)
 		svc = newService(rpo)
 		hdl = newHandler(svc)
 		rtr = newRouter(api, ps, l, hdl)

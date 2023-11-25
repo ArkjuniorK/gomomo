@@ -1,4 +1,4 @@
-package strcon
+package shipping
 
 import (
 	"github.com/ArkjuniorK/gofiber-boilerplate/internal/core"

@@ -1,4 +1,4 @@
-package strcon
+package shipping
 
 import (
 	"context"

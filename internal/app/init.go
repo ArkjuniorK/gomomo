@@ -3,21 +3,26 @@ package app
 import (
 	"github.com/ArkjuniorK/gofiber-boilerplate/internal/core"
 	"github.com/ArkjuniorK/gofiber-boilerplate/internal/mws"
-	"github.com/ArkjuniorK/gofiber-boilerplate/internal/pkg/strcon"
+	"github.com/ArkjuniorK/gofiber-boilerplate/internal/pkg/shipping"
 	slogfiber "github.com/samber/slog-fiber"
 )
 
-// initCore initialize core packages of application such as router, logger, database client, etc.
+// initCore initialize core packages of application
+// such as router, logger, database, etc.
 func (app *app) initCore() {
 
 	logger := core.NewLogger()
 	app.Logger = logger
+
+	db := core.NewDatabase(logger)
+	app.DB = db
 
 	api := core.NewApi(logger)
 	mws.InitAPIMiddleware(api, slogfiber.New(logger.GetCore()))
 	app.API = api
 
 	pubSub := core.NewPubSub(logger)
+	mws.InitPubSubMiddleware(pubSub)
 	app.PubSub = pubSub
 
 	defer logger.GetCore().Info("Initialize core packages done!")
@@ -30,12 +35,13 @@ func (app *app) initCore() {
 func (app *app) initPackages() {
 
 	var (
+		db     = app.DB
 		api    = app.API
 		logger = app.Logger
-		pubsub = app.PubSub
+		pubSub = app.PubSub
 	)
 
-	strcon.New(api, logger, pubsub)
+	shipping.New(db, api, logger, pubSub)
 
 	defer logger.GetCore().Info("Initialize common packages done!")
 

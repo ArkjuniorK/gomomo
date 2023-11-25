@@ -18,6 +18,7 @@ type App interface {
 type app struct {
 	Addr string
 
+	DB     *core.Database
 	API    *core.API
 	Logger *core.Logger
 	PubSub *core.PubSub

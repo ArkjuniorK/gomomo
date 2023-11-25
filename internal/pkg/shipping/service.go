@@ -1,4 +1,4 @@
-package strcon
+package shipping
 
 import (
 	"context"
@@ -27,7 +27,7 @@ func (s *service) Convert(ctx context.Context, typ, pyd string) (rs string, err 
 
 	}
 
-	return "", errors.New("strcon: no type given")
+	return "", errors.New("shipping: no type given")
 }
 
 func newService(repo *repository) *service {

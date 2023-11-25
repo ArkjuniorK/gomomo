@@ -7,6 +7,10 @@ import (
 )
 
 // PubSub responsible for communication intermediary between packages.
+// The core is using watermill GoChannel pub/sub implementation
+// and could be replaced by any other type as long as
+// it's still using watermill package, otherwise
+// the router wouldn't work as expected.
 type PubSub struct {
 	core   *gochannel.GoChannel
 	router *message.Router
