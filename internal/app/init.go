@@ -25,7 +25,7 @@ func (app *app) initCore() {
 	mws.InitPubSubMiddleware(pubSub)
 	app.PubSub = pubSub
 
-	defer logger.GetCore().Info("Initialize core packages done!")
+	defer logger.GetCore().Info("Initialize dependencies done!")
 
 }
 
@@ -43,6 +43,6 @@ func (app *app) initPackages() {
 
 	shipping.New(db, api, logger, pubSub)
 
-	defer logger.GetCore().Info("Initialize common packages done!")
+	defer logger.GetCore().Info("Initialize packages done!")
 
 }
