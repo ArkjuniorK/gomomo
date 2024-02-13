@@ -2,7 +2,7 @@ package shipping
 
 import (
 	"context"
-	"github.com/ArkjuniorK/gofiber-boilerplate/internal/schema"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -19,14 +19,14 @@ func newHandler(svc *service) *handler {
 
 func (h *handler) Convert() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
-		var body *schema.Request
+		var body map[string]interface{}
 		err := ctx.BodyParser(&body)
 		if err != nil {
 			return err
 		}
 
 		typ := ctx.Params("type")
-		pyd := body.Payload.(string)
+		pyd := body["payload"].(string)
 
 		rs, err := h.service.Convert(ctx.Context(), typ, pyd)
 		if err != nil {

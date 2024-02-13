@@ -8,6 +8,6 @@ and then devs knows how it's done.
 
 ### TODO:
 
-1. Implement Swagger
-2. Docker build and deploy with docker compose
-3. Create a better cmd line tool to run the project
+- ~~Implement Swagger Documentation~~
+- Add Dockerfile
+- Add database migration and seeder

@@ -31,6 +31,7 @@ func InitAPIMiddleware(api *core.API, mws ...fiber.Handler) {
 
 // responseDispatcher useful to wrap the response to *schema.Response
 // so each response have unified structure.
+// TODO: add error handling
 func responseDispatcher() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		if err := ctx.Next(); err != nil {

@@ -1,0 +1,33 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "API Docs",
+        "version": "1.0.0",
+        "description": ""
+    },
+    "servers": [
+        {
+            "description": "Local",
+            "url": "http://localhost:8080/api/v1"
+        },
+        {
+
+            "description": "Development",
+            "url": "https://data.id/api/v1"
+        }
+
+    ],
+    "paths": {
+    },
+    "components": {
+        "securitySchemes": {
+            "Bearer": {
+                "in": "header",
+                "type": "apiKey",
+                "name": "Authorization",
+                "description": "Token for authorization process"
+            }
+
+        }
+    }
+}

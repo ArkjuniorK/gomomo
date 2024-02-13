@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <title>RESTful API Documentation</title>
+    <link href="assets/style.css" rel="stylesheet" />
+    <style>
+      .topbar {
+        display: none;
+      }
+      .wrapper .block .models {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="swagger-ui"></div>
+    <script src="assets/jquery-2.1.4.min.js"></script>
+    <script src="assets/swagger-bundle.js"></script>
+    <script type="application/javascript">
+      const ui = SwaggerUIBundle({
+        url: "assets/swagger.json",
+        dom_id: "#swagger-ui",
+      });
+    </script>
+  </body>
+</html>

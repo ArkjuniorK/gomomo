@@ -14,8 +14,8 @@ func (app *app) initCore() {
 	logger := core.NewLogger()
 	app.Logger = logger
 
-	db := core.NewDatabase(logger)
-	app.DB = db
+	// db := core.NewDatabase(logger)
+	// app.DB = db
 
 	api := core.NewApi(logger)
 	mws.InitAPIMiddleware(api, slogfiber.New(logger.GetCore()))
