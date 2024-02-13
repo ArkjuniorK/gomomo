@@ -4,6 +4,7 @@ import (
 	"os"
 	"path"
 
+	"github.com/ArkjuniorK/gofiber-boilerplate/internal/schema"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/html/v2"
 )
@@ -26,6 +27,7 @@ func NewApi(l *Logger) *API {
 	conf := fiber.Config{
 		Views:                 html.New(path.Join(wd, "api"), ".html"),
 		AppName:               "go-boilerplate",
+		ErrorHandler:          errorHandler,
 		DisableStartupMessage: true,
 	}
 
@@ -46,4 +48,17 @@ func (r *API) GetCore() *fiber.App {
 
 func (r *API) GetRouter() fiber.Router {
 	return r.router
+}
+
+func errorHandler(c *fiber.Ctx, err error) error {
+	code := fiber.StatusInternalServerError
+
+	switch err.Error() {
+	}
+
+	rs := new(schema.Response)
+	rs.Msg = err.Error()
+	rs.Data = nil
+
+	return c.Status(code).JSON(rs)
 }
