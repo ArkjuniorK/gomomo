@@ -6,8 +6,12 @@ clear after each domain with no magic, just a code. So devs didn't have to
 open or read the docs/code about how things are works, simply implement
 and then devs knows how it's done.
 
+### Why Modular Monolith?
+
+### Further Reading
+
 ### TODO:
 
 - ~~Implement Swagger Documentation~~
-- Add Dockerfile
+- ~~Add Dockerfile for docker based deployment~~
 - Add database migration and seeder
