@@ -15,3 +15,4 @@ and then devs knows how it's done.
 - ~~Implement Swagger Documentation~~
 - ~~Add Dockerfile for docker based deployment~~
 - Add database migration and seeder
+- Create generator via cmd
