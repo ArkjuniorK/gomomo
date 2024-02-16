@@ -1,4 +1,4 @@
-package mws
+package middleware
 
 import (
 	"github.com/ArkjuniorK/gofiber-boilerplate/internal/core"

@@ -2,8 +2,7 @@ package app
 
 import (
 	"github.com/ArkjuniorK/gofiber-boilerplate/internal/core"
-	"github.com/ArkjuniorK/gofiber-boilerplate/internal/mws"
-	"github.com/ArkjuniorK/gofiber-boilerplate/internal/pkg/shipping"
+	"github.com/ArkjuniorK/gofiber-boilerplate/internal/middleware"
 	slogfiber "github.com/samber/slog-fiber"
 )
 
@@ -18,11 +17,11 @@ func (app *app) initCore() {
 	// app.DB = db
 
 	api := core.NewApi(logger)
-	mws.InitAPIMiddleware(api, slogfiber.New(logger.GetCore()))
+	middleware.InitAPIMiddleware(api, slogfiber.New(logger.GetCore()))
 	app.API = api
 
 	pubSub := core.NewPubSub(logger)
-	mws.InitPubSubMiddleware(pubSub)
+	middleware.InitPubSubMiddleware(pubSub)
 	app.PubSub = pubSub
 
 	defer logger.GetCore().Info("Initialize dependencies done!")
@@ -35,14 +34,11 @@ func (app *app) initCore() {
 func (app *app) initPackages() {
 
 	var (
-		db     = app.DB
-		api    = app.API
+		//db     = app.DB
+		//api    = app.API
+		//pubSub = app.PubSub
 		logger = app.Logger
-		pubSub = app.PubSub
 	)
 
-	shipping.New(db, api, logger, pubSub)
-
 	defer logger.GetCore().Info("Initialize packages done!")
-
 }
