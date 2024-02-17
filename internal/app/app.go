@@ -3,14 +3,15 @@ package app
 import (
 	"context"
 	"fmt"
-	"github.com/ArkjuniorK/gofiber-boilerplate/internal/core"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/ArkjuniorK/gofiber-boilerplate/internal/core"
 )
 
 type App interface {
-	Run()
+	Serve()
 }
 
 // app contain all the core dependency and should
@@ -24,7 +25,7 @@ type app struct {
 	PubSub *core.PubSub
 }
 
-func (app *app) Run() {
+func (app *app) Serve() {
 	api := app.API.GetCore()
 	logger := app.Logger.GetCore()
 	pubSub := app.PubSub.GetCore()
