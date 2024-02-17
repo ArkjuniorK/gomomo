@@ -1,4 +1,4 @@
-package shipping
+package auth
 
 import (
 	"github.com/ArkjuniorK/gofiber-boilerplate/internal/core"
@@ -6,7 +6,7 @@ import (
 
 type router struct {
 	api    *core.API
-	pubSub *core.PubSub
+	pubsub *core.PubSub
 	logger *core.Logger
 
 	handler *handler
@@ -15,7 +15,7 @@ type router struct {
 func newRouter(a *core.API, p *core.PubSub, l *core.Logger, h *handler) *router {
 	return &router{
 		api:     a,
-		pubSub:  p,
+		pubsub:  p,
 		handler: h,
 		logger:  l,
 	}
@@ -24,28 +24,17 @@ func newRouter(a *core.API, p *core.PubSub, l *core.Logger, h *handler) *router 
 func (r *router) Serve() {
 
 	var (
-		api    = r.api
-		pubSub = r.pubSub
-
+		api     = r.api
 		handler = r.handler
 	)
 
 	// API routes definition
 	{
-		apiRouter := api.GetRouter().Group("/strconv")
-		apiRouter.Post("/convert/:type", handler.Convert())
+		apiRouter := api.GetRouter()
+		apiRouter.Post("/login", handler.Login)
+		apiRouter.Post("/register", handler.Register)
+		apiRouter.Delete("/logout", handler.Logout)
 	}
 
 	// Pub/Sub routes definition
-	{
-		psCore := pubSub.GetCore()
-		psRouter := pubSub.GetRouter()
-		psRouter.AddHandler(
-			"example_handler",
-			"convert",
-			psCore,
-			"convert",
-			psCore,
-			nil)
-	}
 }

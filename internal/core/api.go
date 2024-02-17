@@ -4,9 +4,9 @@ import (
 	"os"
 	"path"
 
-	"github.com/ArkjuniorK/gofiber-boilerplate/internal/schema"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/html/v2"
+	"gorm.io/gorm"
 )
 
 // API responsible to deliver communication of
@@ -54,11 +54,15 @@ func errorHandler(c *fiber.Ctx, err error) error {
 	code := fiber.StatusInternalServerError
 
 	switch err.Error() {
+	case
+		os.ErrNotExist.Error(),
+		gorm.ErrRecordNotFound.Error():
+		code = fiber.StatusNotFound
 	}
 
-	rs := new(schema.Response)
-	rs.Msg = err.Error()
-	rs.Data = nil
+	rs := make(map[string]interface{})
+	rs["msg"] = err.Error()
+	rs["data"] = nil
 
 	return c.Status(code).JSON(rs)
 }
