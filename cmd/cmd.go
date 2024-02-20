@@ -19,6 +19,7 @@ func init() {
 
 	genCmd.AddCommand(modelGenCmd, pkgGenCmd)
 
+	pkgGenCmd.Flags().StringVarP(&name, "name", "n", "", "Name of the model")
 	modelGenCmd.Flags().StringVarP(&name, "name", "n", "", "Name of the model")
 
 	rootCmd.Execute()
