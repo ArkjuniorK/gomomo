@@ -11,6 +11,7 @@ require (
 )
 
 require (
+	github.com/dave/jennifer v1.7.0 // indirect
 	github.com/gofiber/template v1.8.2 // indirect
 	github.com/gofiber/utils v1.1.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
