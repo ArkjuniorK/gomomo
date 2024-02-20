@@ -49,22 +49,14 @@ func generateModel(cmd *cobra.Command, args []string) {
 		logger.Error("Unable to get current working directory", "error", err)
 	}
 
-	fn := path.Join(wd, "internal", "model", name+".go")
-	fl, err := os.Create(fn)
-	if err != nil {
-		logger.Error("Unable create the model", "error", err)
-	}
-
+	modelFile := path.Join(wd, "internal", "model", name+".go")
 	modelName := strings.ToUpper(name[0:1]) + name[1:]
+	model := jen.NewFilePath("model")
+	model.Type().Id(modelName).Struct()
 
-	payload := `package model
-
-type ` + modelName + ` struct {}
-	`
-
-	_, err = fl.WriteString(payload)
-	if err != nil {
-		logger.Error("Unable to write the model", "error", err)
+	if err = model.Save(modelFile); err != nil {
+		logger.Error("Unable to generate the model", "error", err)
+		return
 	}
 
 	logger.Info("Success generate model", "name", name)
