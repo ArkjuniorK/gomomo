@@ -27,7 +27,6 @@ var pkgGenCmd = &cobra.Command{
 	Run:   generatePkg,
 }
 
-// TODO: use jennifer to generate the model
 func generateModel(cmd *cobra.Command, args []string) {
 	logger := core.NewLogger().GetCore()
 
@@ -49,8 +48,13 @@ func generateModel(cmd *cobra.Command, args []string) {
 		logger.Error("Unable to get current working directory", "error", err)
 	}
 
+	var modelName string
+	names := strings.Split(name, "_")
+	for _, name := range names {
+		modelName += strings.ToUpper(name[0:1]) + name[1:]
+	}
+
 	modelFile := path.Join(wd, "internal", "model", name+".go")
-	modelName := strings.ToUpper(name[0:1]) + name[1:]
 	model := jen.NewFilePath("model")
 	model.Type().Id(modelName).Struct()
 
