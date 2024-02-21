@@ -14,5 +14,10 @@ and then devs knows how it's done.
 
 - ~~Implement Swagger Documentation~~
 - ~~Add Dockerfile for docker based deployment~~
-- Add database migration and seeder
 - Create generator via cmd
+  - ~~Model~~
+  - ~~Pkg~~
+  - CRUD
+- Add database migration and seeder
+- Create example pkg that ready to run
+- Complete the README
