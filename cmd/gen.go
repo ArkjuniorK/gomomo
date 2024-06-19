@@ -27,6 +27,7 @@ var pkgGenCmd = &cobra.Command{
 	Run:   generatePkg,
 }
 
+// generateModel generate struct of database schema at internal/model
 func generateModel(cmd *cobra.Command, args []string) {
 	logger := core.NewLogger().GetCore()
 
@@ -66,6 +67,9 @@ func generateModel(cmd *cobra.Command, args []string) {
 	logger.Info("Success generate model", "name", name)
 }
 
+// generatePkg generate new package/model directory at internal/pkg 
+// contains basic module files such as handler, service,
+// repository schema, and router
 func generatePkg(cmd *cobra.Command, args []string) {
 	var (
 		logger   = core.NewLogger().GetCore()

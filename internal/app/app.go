@@ -15,7 +15,7 @@ type App interface {
 }
 
 // app contain all the core dependency and should
-// be implemented at application startup.
+// be implement at application startup.
 type app struct {
 	Addr string
 
