@@ -4,14 +4,13 @@ go 1.21.0
 
 require (
 	github.com/ThreeDotsLabs/watermill v1.3.5
+	github.com/dave/jennifer v1.7.0
 	github.com/gofiber/fiber/v2 v2.51.0
-	github.com/golang-jwt/jwt/v5 v5.2.0
 	github.com/samber/slog-fiber v1.8.0
 	github.com/spf13/cobra v1.8.0
 )
 
 require (
-	github.com/dave/jennifer v1.7.0 // indirect
 	github.com/gofiber/template v1.8.2 // indirect
 	github.com/gofiber/utils v1.1.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
@@ -39,7 +38,6 @@ require (
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	go.opentelemetry.io/otel v1.19.0 // indirect
 	go.opentelemetry.io/otel/trace v1.19.0 // indirect
-	golang.org/x/crypto v0.19.0
 	golang.org/x/sys v0.17.0 // indirect
 	gorm.io/driver/sqlite v1.5.4
 	gorm.io/gorm v1.25.5
