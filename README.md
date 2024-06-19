@@ -1,9 +1,9 @@
-# Modular Monolith Boilerplate
-
 <div align="center">
-    <h1>【 Looking for contribution 】</h1>
-    <h3></h3>
+    <h1>【 Looking for contributor 】</h1>
+    <h3>Feel free to open issue or pull request to make this repo become more useful</h3>
 </div>
+
+# Modular Monolith Boilerplate
 
 This boilerplate focus on how to design modular monolith structure
 that easy to understand, fast to implement and make the boundaries more
