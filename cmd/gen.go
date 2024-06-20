@@ -83,7 +83,7 @@ func generatePkg(cmd *cobra.Command, args []string) {
 	}
 
 	if len(name) == 0 {
-		logger.Error("Name of the pkg is required")
+		logger.Error("Specify name of package")
 		return
 	}
 

@@ -7,6 +7,8 @@ var (
 
 	host string
 	port string
+
+  ext string
 )
 
 var rootCmd = &cobra.Command{Use: "app"}
@@ -18,9 +20,13 @@ func init() {
 	apiCmd.Flags().StringVar(&host, "host", "0.0.0.0", "Host to run the API server")
 
 	genCmd.AddCommand(modelGenCmd, pkgGenCmd)
-
 	pkgGenCmd.Flags().StringVarP(&name, "name", "n", "", "Name of the package")
 	modelGenCmd.Flags().StringVarP(&name, "name", "n", "", "Name of the model")
+
+  dbCmd.AddCommand(dbMigrateCmd, dbSeedCmd)
+  dbMigrateCmd.AddCommand(dbMigrateCreateCmd, dbMigrateUpCmd, dbMigrateDownCmd)
+  dbMigrateCreateCmd.Flags().StringVarP(&ext, "ext", "e", "sql", "Migration extension")
+  dbMigrateCreateCmd.Flags().StringVarP(&name, "name", "n", "", "Name or title of migration")
 
 	rootCmd.Execute()
 }
