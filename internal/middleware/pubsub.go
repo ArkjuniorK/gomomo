@@ -9,13 +9,9 @@ import (
 // type otherwise it won't be added to router stack.
 
 func InitPubSubMiddleware(ps *core.PubSub, mws ...message.HandlerMiddleware) {
-
 	router := ps.GetRouter()
 
-	if len(mws) != 0 {
-		for _, mw := range mws {
-			router.AddMiddleware(mw)
-		}
+	for _, mw := range mws {
+		router.AddMiddleware(mw)
 	}
-
 }

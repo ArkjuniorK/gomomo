@@ -12,13 +12,10 @@ import (
 // InitAPIMiddleware would inject the middleware to application API,
 // middleware could also pass as arguments.
 func InitAPIMiddleware(api *core.API, mws ...fiber.Handler) {
-
 	router := api.GetRouter()
 
-	if len(mws) != 0 {
-		for _, mw := range mws {
-			router.Use(mw)
-		}
+	for _, mw := range mws {
+		router.Use(mw)
 	}
 
 	router.Use(
